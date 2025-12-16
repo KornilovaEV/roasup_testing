@@ -1,0 +1,26 @@
+{
+  "name": "roasup_testing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "eslint": "^9.39.2",
+    "html-webpack-plugin": "^5.6.5",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "dependencies": {
+    "pixi.js": "^8.14.3"
+  }
+}

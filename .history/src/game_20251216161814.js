@@ -1,0 +1,26 @@
+export const assetsMap = {
+    sprite: [
+        {name: 'carRed', url: '../assets/TP_car_up_splite-red.png'},
+        {name: 'carYellow', url: '.../assets/TP_car_up_splite-yellow.png'},
+        {name: 'carBlue', url: ''},
+        {name: 'carGreen', url: ''},
+        {name: 'carWhite', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+        {name: 'carRed', url: ''},
+            [allTexturesKeys.carRed]: ,
+            [allTexturesKeys.]: '',
+            [allTexturesKeys.]: '../assets/TP_car_up_splite-blue.png',
+            [allTexturesKeys.]: '../assets/TP_car_up_splite-green.png',
+            [allTexturesKeys.]: '../assets/TP_car_up_splite-white.png',
+            [allTexturesKeys.hand]: '../assets/hand.png',
+            [allTexturesKeys.gamelogo]: '../assets/gamelogo.png',
+            [allTexturesKeys.fail]: '../assets/fail3.psd',
+            [allTexturesKeys.button]: '../assets/Button.png',
+    ]
+}
