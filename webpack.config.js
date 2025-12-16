@@ -12,6 +12,10 @@
      module: {
        rules: [
          // правила обработки модулей
+        {
+          test: /\.(png|jpe?g|gif|svg)$/i,
+          type: 'asset/resource', // или 'asset', если нужно авто-инлайнить мелкие
+        },
        ],
      },
      plugins: [
@@ -25,4 +29,3 @@
        port: 8080,
      },
    };
-   

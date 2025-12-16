@@ -1,43 +1,42 @@
 import { Container, Sprite } from 'pixi.js';
 
-export function addCars(app, cars) {
+export function addCars(app) {
   // Create a container to hold all the fish sprites.
-  const fishContainer = new Container();
+  const carStatic = new Container();
 
   // Add the fish container to the stage.
-  app.stage.addChild(fishContainer);
+  app.stage.addChild(carStatic);
+  
+    const carBlue = Sprite.from('carBlue');
+    carBlue.x = 110;
+    carBlue.y = 130;
+    carBlue.scale.set(0.3); 
+    carBlue.scale.y *= -1; 
+    carStatic.addChild(carBlue);
+
+    const carGreen = Sprite.from('carGreen');
+
+    carGreen.x = 590;
+    carGreen.y = 130;
+    carGreen.scale.set(0.3);
+    carGreen.scale.y *= -1; 
+    carStatic.addChild(carGreen);
+
+    const carRed = Sprite.from('carRed');
+
+    carRed.x = 150;
+    carRed.y = 430;
+    carRed.scale.set(0.3);
+    carStatic.addChild(carRed);
 
 
-  const fishCount = 20;
-  const fishAssets = ['carRed', 'carYellow', 'carBlue', 'carGreen'];
+    const carYellow = Sprite.from('carYellow');
 
-  // Create a fish sprite for each fish.
-  for (let i = 0; i < fishCount; i++) {
-    // Cycle through the fish assets for each sprite.
-    const fishAsset = fishAssets[i % fishAssets.length];
+    carYellow.x = 550;
+    carYellow.y = 430;
+    carYellow.scale.set(0.3);
+    carStatic.addChild(carYellow);
 
-    // Create a fish sprite.
-    const fish = Sprite.from(fishAsset);
 
-    // Center the sprite anchor.
-    fish.anchor.set(0.5);
 
-    // Assign additional properties for the animation.
-    fish.direction = Math.random() * Math.PI * 2;
-    fish.speed = 2 + Math.random() * 2;
-    fish.turnSpeed = Math.random() - 0.8;
-
-    // Randomly position the fish sprite around the stage.
-    fish.x = Math.random() * app.screen.width;
-    fish.y = Math.random() * app.screen.height;
-
-    // Randomly scale the fish sprite to create some variety.
-    fish.scale.set(0.5 + Math.random() * 0.2);
-
-    // Add the fish sprite to the fish container.
-    fishContainer.addChild(fish);
-
-    // Add the fish sprite to the fish array.
-    cars.push(fish);
-  }
 }
