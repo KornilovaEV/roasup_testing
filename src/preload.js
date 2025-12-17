@@ -1,6 +1,5 @@
 import { Assets } from 'pixi.js';
 
-// Добавьте в начало файла
 import carRed from './assets/carRed.png';
 import carYellow from './assets/carYellow.png';
 import carBlue from './assets/carBlue.png';
