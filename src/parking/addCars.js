@@ -31,7 +31,7 @@ export function addCars(app, activeSprite) {
   const carRed = Sprite.from('carRed');
 
   carRed.x = parkingWithSpacesWidth;
-  carRed.y = app.screen.height - 200;
+  carRed.y = app.screen.height - 120;
   carRed.scale.set(0.1);
   carStatic.addChild(carRed);
 
@@ -39,7 +39,7 @@ export function addCars(app, activeSprite) {
   const carYellow = Sprite.from('carYellow');
 
   carYellow.x = parkingWithSpacesWidth*3;
-  carYellow.y = app.screen.height - 200;
+  carYellow.y = app.screen.height - 120;
   carYellow.scale.set(0.1);
   carStatic.addChild(carYellow);
 

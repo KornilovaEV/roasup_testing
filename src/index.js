@@ -3,7 +3,10 @@ import { addParkingSpace } from './parking/addParkingSpace.js'
 import { addSpaceP } from "./parking/addSpaceP.js";
 import { addCars } from "./parking/addCars.js";
 import { preload } from "./preload.js";
-import { addHand, animateHand } from "./hand/addHand.js";
+import { addHand, animateHand, disappearanceHand } from "./hand/addHand.js";
+import { findCoordinatesTrash } from "./findCoordinatesTrash.js";
+import { driveCars } from "./driveCars/driveCars.js";
+import { finalScen } from "./finalScen.js";
 
 const app = new Application();
 
@@ -30,6 +33,7 @@ let lastPoint = null;       // Хранение последней точки д
 let handVisible = true;     // Отображение анимации руки
 
 let activeColor = null;
+let trashCoord = null;
 // Функция для начала рисования
 const startDrawing = ({data}, activeSprite, line) => {
   lastPoint = data.getLocalPosition(app.stage);
@@ -53,18 +57,17 @@ const startDrawing = ({data}, activeSprite, line) => {
     handVisible = false;
   }    
 };
-
-
      
 const onDrawLine = ({data}, line, lineSprite) => {
   
   if (!isDrawing || !lastPoint) return;
   const currentPos = data.getLocalPosition(app.stage);
 
-  const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: activeColor});
+  const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: activeColor, width: 10});
 
-  line[activeColor].push({x: currentPos.x, y: currentPos.y});
+  line[activeColor].push({x: Math.round(currentPos.x), y: Math.round(currentPos.y)});
   lineSprite[activeColor].push(lineGraphics)
+
 
   app.stage.addChild(lineGraphics);
   lastPoint = currentPos; 
@@ -90,7 +93,19 @@ const stopDrawing = (line, lineSprite, color) => {
     line[activeColor].length = 0;
     activeColor = null;
   }   
+  if(line['#d1191f'].length > 0 && line['#ffc841'].length > 0){
+    trashCoord = findCoordinatesTrash(line['#d1191f'], line['#ffc841']);
+  }
+
+  if(trashCoord){  
+      driveCars(activeSprite, line, trashCoord, app);          
+    }
+  
 };
+
+  
+
+    
 
 // Asynchronous IIFE
 (async () => {
@@ -107,42 +122,25 @@ const stopDrawing = (line, lineSprite, color) => {
   activeSprite[0].on('pointerdown', (event) => startDrawing(event, activeSprite, line));
   activeSprite[0].on('pointermove', (event) =>  onDrawLine(event, line, lineSprite ));
   activeSprite[0].on('pointerup', () => stopDrawing(line, lineSprite, activeColor));
+  
   activeSprite[0].hitArea = new Rectangle(-400, -4000, 5500, 5500);
+  
+  
+  let timer;
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    finalScen(app)
+  }, 20 * 1000);
 
-  app.ticker.add((time) => {
+  const tickerHand = (time) => {
     if(handVisible){
       animateHand(app, handSprite, time);
     } else {
-      handSprite.visible = false;
+      clearTimeout(timer)
+      app.ticker.remove(tickerHand);
+      disappearanceHand(app, handSprite);
     }
-  });
-
-
-
-//   setTimeout(() => {
-//     console.log('timer')
-//     const obj = new Graphics().rect(0, 0, app.screen.width, app.screen.height).fill({
-//     color: 0x000000,
-//     alpha: 0,
-// });
-    
-//     app.stage.addChild(obj); // Добавляем затемняющий слой на сцену
-//   }, 3000); // Задержка в миллисекундах (5 сек.)
-
-  //   const obj = new Graphics().rect(0, 0, app.screen.width, app.screen.height).fill({
-  //     color: 0x000000,
-  //     alpha: 0,
-  //   });
-    
-  // app.stage.addChild(obj); // Добавляем затемняющий слой на сцену
-
-  //     // Таймер, запускающий затемнение
-  //   setTimeout(() => {
-  //     console.log('timer')
-  //     obj.alpha = 0.5
-  //       // updateOverlay(); // Начало анимации затемнения
-  //   }, 3000); // Затемнение начнется ровно через 5 секунд
-
-
+  };
+  app.ticker.add(tickerHand);
   
 })();

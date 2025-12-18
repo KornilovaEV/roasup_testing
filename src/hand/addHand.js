@@ -15,7 +15,6 @@ export function addHand(app) {
 export function animateHand(app, handSprite, time) {
 
     const dx = time.deltaTime *1.5;
-
     const hand = handSprite;
     hand.x += dx;
     hand.y -= dx;
@@ -24,4 +23,16 @@ export function animateHand(app, handSprite, time) {
       hand.x = 220;
       hand.y = 400;
     }
+};
+
+export function disappearanceHand(app, handSprite){
+  const ticker = () => {
+    handSprite.alpha -= 0.05;
+    
+    if (handSprite.alpha <= 0) {
+        handSprite.alpha = 0; 
+        app.ticker.remove(ticker);
+    }}
+
+  app.ticker.add(ticker);
 };
