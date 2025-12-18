@@ -1,7 +1,7 @@
 import { Container, Sprite } from 'pixi.js';
 import { BOTTOM_Y, PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
 
-export function addCars(app, handSprite, activeSprite) {
+export function addCars(app, activeSprite) {
   const carStatic = new Container();
   // Общая ширина всех элементов (парковочных мест и отступов между ними)
   const totalWidth = app.screen.width - ((PARKING_LINE - 1) * PADDING_BETWEEN_SPACES)
@@ -43,40 +43,9 @@ export function addCars(app, handSprite, activeSprite) {
   carYellow.scale.set(0.1);
   carStatic.addChild(carYellow);
 
-
-  const hand = Sprite.from('hand');
-
-  hand.x = 220;
-  hand.y = 400;
-  hand.scale.set(0.2);
-
-  carStatic.addChild(hand);
-
-  handSprite.push(hand);
-
   activeSprite.push(carRed);
   activeSprite.push(carYellow);
 
 }
 
-
-export function animateHand(app, handSprite, time) {
-
-
-        // Calculate the amount of distance to move the mountain groups per tick.
-    const dx = time.deltaTime *1.5;
-
-
-          // Move the mountain groups leftwards.
-    const hand = handSprite[0];
-    hand.x += dx;
-    hand.y -= dx;
-
-    if (hand.x >= (app.screen.width / 10 ) * 5 + 40) {
-      hand.x = 220;
-      hand.y = 400;
-
-    }
-
-}
 
