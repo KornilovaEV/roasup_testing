@@ -117,20 +117,22 @@ const stopDrawing = (line, lineSprite, color) => {
   addCars(app, activeSprite);
   const handSprite = addHand(app);
 
-  
-  activeSprite[0].eventMode = 'static';
-  activeSprite[0].on('pointerdown', (event) => startDrawing(event, activeSprite, line));
-  activeSprite[0].on('pointermove', (event) =>  onDrawLine(event, line, lineSprite ));
-  activeSprite[0].on('pointerup', () => stopDrawing(line, lineSprite, activeColor));
-  
-  activeSprite[0].hitArea = new Rectangle(-400, -4000, 5500, 5500);
+  app.stage.on('pointerdown', (event) => startDrawing(event, activeSprite, line));
+  app.stage.on('pointermove', (event) =>  onDrawLine(event, line, lineSprite ));
+  app.stage.on('pointerup', () => stopDrawing(line, lineSprite, activeColor));
+  app.stage.interactive = true;
+  app.stage.interactiveChildren = false;
+  app.stage.hitArea = new Rectangle(-400, -4000, 5500, 5500);
+
+   
   
   
   let timer;
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    finalScen(app)
-  }, 20 * 1000);
+  // clearTimeout(timer);
+  // timer = setTimeout(() => {
+  //   disappearanceHand(app, handSprite);
+  //   finalScen(app);
+  // }, 20 * 1000);
 
   const tickerHand = (time) => {
     if(handVisible){

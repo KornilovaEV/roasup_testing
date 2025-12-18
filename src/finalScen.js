@@ -41,7 +41,7 @@ export function finalScen(app){
     let scaleProgress = 0
 
     const ticerFinalScen = (delta) => {
-        background.alpha += 0.01 * delta.deltaTime; 
+        background.alpha += 0.005 * delta.deltaTime; 
         logoSprite.alpha += 0.02 * delta.deltaTime; 
         buttonSprite.alpha += 0.02 * delta.deltaTime; 
         
@@ -50,10 +50,10 @@ export function finalScen(app){
 
         buttonSprite.scale.set(scaleProgress * 5)
 
-        if (background.alpha >= 1 && logoSprite.alpha >= 1 && buttonSprite.alpha >= 1 &&
+        if (background.alpha >= 0.5 && logoSprite.alpha >= 1 && buttonSprite.alpha >= 1 &&
             scaleProgress >= 0.1
         ) {
-            background.alpha = 1; 
+            background.alpha = 0.5; 
             logoSprite.alpha = 1; 
             buttonSprite.alpha = 1; 
             logoSprite.scale.set(0.1);

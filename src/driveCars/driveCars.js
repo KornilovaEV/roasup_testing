@@ -8,15 +8,21 @@ export function driveCars(activeSprite, line, coordTrash, app) {
 
   let currentIndexRed = 0;
   let currentIndexYellow = 0;
-  const speed = 0.5;
+//   const speed = 0.5;
+
+  const speedRed = Math.max(coordDriwRedCar.length, coordDriwYellowCar.length) === coordDriwRedCar.length ? 1: 
+  coordDriwRedCar.length/coordDriwYellowCar.length;
+  const speedYellow = Math.max(coordDriwRedCar.length, coordDriwYellowCar.length) === coordDriwYellowCar.length ? 1: 
+  coordDriwYellowCar.length/coordDriwRedCar.length;
+
 
   const moveCar = (delta) => {
     // Проверяем КРАСНУЮ машину
     if (currentIndexRed <= coordDriwRedCar.length - 1) {
     const targetPointRed = coordDriwRedCar[currentIndexRed];
           
-    redCar.x += (targetPointRed.x - redCar.x) * speed * delta.deltaTime;
-    redCar.y += (targetPointRed.y - redCar.y) * speed * delta.deltaTime;
+    redCar.x += (targetPointRed.x - redCar.x) * speedRed * delta.deltaTime;
+    redCar.y += (targetPointRed.y - redCar.y) * speedRed * delta.deltaTime;
 
     // Проверяем расстояние ДО увеличения индекса
     const distRed = Math.hypot(targetPointRed.x - redCar.x, targetPointRed.y - redCar.y);
@@ -30,8 +36,9 @@ export function driveCars(activeSprite, line, coordTrash, app) {
       const targetPointYellow = coordDriwYellowCar[currentIndexYellow];
       
     
-    yellowCar.x += (targetPointYellow.x - yellowCar.x)* speed * delta.deltaTime;
-    yellowCar.y += (targetPointYellow.y - yellowCar.y)  * speed * delta.deltaTime;
+    yellowCar.x += (targetPointYellow.x - yellowCar.x) * speedYellow * delta.deltaTime;
+    yellowCar.y += (targetPointYellow.y - yellowCar.y) * speedYellow * delta.deltaTime;
+
 
       const distYellow = Math.hypot(targetPointYellow.x - yellowCar.x, targetPointYellow.y - yellowCar.y);
       if (distYellow < 8) {
@@ -54,18 +61,19 @@ export function driveCars(activeSprite, line, coordTrash, app) {
         app.stage.addChild(fail);
 
 
-        const ticker = (delta) => {
-        fail.alpha += 0.02 * delta.deltaTime;
+        // const ticker = (delta) => {
+        // fail.alpha += 0.02 * delta.deltaTime;
         
-        if (fail.alpha >= 1) {
-            fail.alpha = 1; 
-            app.ticker.remove(ticker); 
-            setTimeout(() => {
-                finalScen(app);
-            }, 0)
-        }}
+        // if (fail.alpha >= 1) {
+        //     fail.alpha = 1; 
+        //     app.ticker.remove(ticker); 
+        //     setTimeout(() => {
+        //         app.stage.removeChild(fail);
+        //         finalScen(app);
+        //     }, 2000)
+        // }}
     
-    app.ticker.add(ticker);
+    // app.ticker.add(ticker);
 
 
     }
