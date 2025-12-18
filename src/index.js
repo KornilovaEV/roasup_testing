@@ -1,4 +1,4 @@
-import { Application, Assets, Graphics, Rectangle} from "pixi.js";
+import { Application, Graphics, Rectangle} from "pixi.js";
 import { addParkingSpace } from './parking/addParkingSpace.js'
 import { addSpaceP } from "./parking/addSpaceP.js";
 import { addCars } from "./parking/addCars.js";
@@ -7,83 +7,91 @@ import { addHand, animateHand } from "./hand/addHand.js";
 
 const app = new Application();
 
-
 async function setup() {
   await app.init({ background: "#545454", }); //  resizeTo: window 
   document.body.appendChild(app.canvas);
 }
 
-
-const handSprite = [];
 const activeSprite = [];
 const sizeText = {};
-const redLine = [];
-let redLineSprite = [];
+
+const line = {
+  '#d1191f': [],
+  '#ffc841': [],
+};
+
+const lineSprite = {
+  '#d1191f': [],
+  '#ffc841': [],
+};
 
 let isDrawing = false;      // Флаг, определяющий состояние рисования
 let lastPoint = null;       // Хранение последней точки для рисования линий
 let handVisible = true;     // Отображение анимации руки
 
-
+let activeColor = null;
 // Функция для начала рисования
-const startDrawing = ({data}) => {
+const startDrawing = ({data}, activeSprite, line) => {
   lastPoint = data.getLocalPosition(app.stage);
-  if(lastPoint.x >  activeSprite[0].x && lastPoint.x <  activeSprite[0].x + 60 && 
-    lastPoint.y >  activeSprite[0].y && lastPoint.y <  activeSprite[0].y + 110 &&
-    redLineSprite.length === 0
+  const [red, yellow] = activeSprite;
+
+  // если красная машинка
+  if(lastPoint.x >  red.x && lastPoint.x < red.x + 60 && 
+    lastPoint.y >  red.y && lastPoint.y < red.y + 110 &&
+    line['#d1191f'].length === 0    
   ){
-      isDrawing = true;
-      handVisible = false;
-    }
+    activeColor = '#d1191f';
+    isDrawing = true;
+    handVisible = false;
+  } //если желтая 
+  else if(lastPoint.x >  yellow.x && lastPoint.x <  yellow.x + 60 && 
+    lastPoint.y >  yellow.y && lastPoint.y <  yellow.y + 110 &&
+    line['#ffc841'].length === 0    
+  ){
+    activeColor = '#ffc841';
+    isDrawing = true;
+    handVisible = false;
+  }    
 };
 
-// const onYellowLine = ({data}) => {
-//   if (!isDrawing || !lastPoint) return;
-//   const currentPos = data.getLocalPosition(app.stage);
 
-//   const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: '#ffc841', pixelLine: true});
-
-//   app.stage.addChild(lineGraphics);
-
-//   lastPoint = currentPos; 
-// };
-
-const stopDrawing = () => {
-  isDrawing = false;
-  lastPoint = null;
-
-  if(
-    !(redLine[redLine.length - 1].x > sizeText.textRedX && redLine[redLine.length - 1].x < sizeText.textRedX + 72 &&
-     redLine[redLine.length - 1].y > sizeText.textRedY && redLine[redLine.length - 1].y < sizeText.textRedY + 72)
-  ){
-    for( let i of redLineSprite){
-        app.stage.removeChild(i)
-    };
-    redLineSprite = []
-  }   
-};
      
-const onRedLine = ({data}) => {
+const onDrawLine = ({data}, line, lineSprite) => {
   
   if (!isDrawing || !lastPoint) return;
   const currentPos = data.getLocalPosition(app.stage);
 
-  const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: '#d1191f'});
+  const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: activeColor});
 
-  // if( currentPos.x > sizeText.textRedX && currentPos.x < sizeText.textRedX + 72 &&
-  //    currentPos.y > sizeText.textRedY && currentPos.y < sizeText.textRedY + 72
-  //   ){
-  //   app.stage.addChild(lineGraphics);
-  // };
-
-  redLine.push({x: currentPos.x, y: currentPos.y});
-  redLineSprite.push(lineGraphics)
+  line[activeColor].push({x: currentPos.x, y: currentPos.y});
+  lineSprite[activeColor].push(lineGraphics)
 
   app.stage.addChild(lineGraphics);
-
   lastPoint = currentPos; 
 
 };
+
+const stopDrawing = (line, lineSprite, color) => {
+  isDrawing = false;
+  lastPoint = null;
+
+  if(!activeColor) return;
+
+  const lastPoints = line[activeColor][line[activeColor].length - 1];
+
+  if(
+    !(lastPoints.x > sizeText[color].x && lastPoints.x < sizeText[color].x + 72 &&
+     lastPoints.y > sizeText[color].y && lastPoints.y < sizeText[color].y + 72)
+  ){
+    for( let i of lineSprite[activeColor]){
+        app.stage.removeChild(i)
+    };
+    lineSprite[activeColor].length = 0;
+    line[activeColor].length = 0;
+    activeColor = null;
+  }   
+};
+
 // Asynchronous IIFE
 (async () => {
   await setup();
@@ -92,27 +100,22 @@ const onRedLine = ({data}) => {
   addParkingSpace(app);
   addSpaceP(app, sizeText);
   addCars(app, activeSprite);
-  addHand(app, handSprite);
+  const handSprite = addHand(app);
 
+  
   activeSprite[0].eventMode = 'static';
-  activeSprite[0].on('pointerdown', startDrawing);
-  activeSprite[0].on('pointermove', onRedLine);
-  activeSprite[0].on('pointerup', stopDrawing);
+  activeSprite[0].on('pointerdown', (event) => startDrawing(event, activeSprite, line));
+  activeSprite[0].on('pointermove', (event) =>  onDrawLine(event, line, lineSprite ));
+  activeSprite[0].on('pointerup', () => stopDrawing(line, lineSprite, activeColor));
   activeSprite[0].hitArea = new Rectangle(-400, -4000, 5500, 5500);
 
-//  activeSprite[1].eventMode = 'static';
-//   activeSprite[1].on('pointerdown', startDrawing);
-//   activeSprite[1].on('pointermove', onYellowLine);
-//   activeSprite[1].on('pointerup', stopDrawing);
-//   activeSprite[1].hitArea = new Rectangle(-400, -400, 800, 800)
-
-    app.ticker.add((time) => {
-      if(handVisible){
-        animateHand(app, handSprite, time);
-      } else {
-        handSprite[0].visible = false;
-      }
-    });
+  app.ticker.add((time) => {
+    if(handVisible){
+      animateHand(app, handSprite, time);
+    } else {
+      handSprite.visible = false;
+    }
+  });
 
 
 

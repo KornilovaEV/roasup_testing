@@ -46,6 +46,4 @@ export function addCars(app, activeSprite) {
   activeSprite.push(carRed);
   activeSprite.push(carYellow);
 
-}
-
-
+};

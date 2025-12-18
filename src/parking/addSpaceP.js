@@ -17,12 +17,16 @@ export function addSpaceP(app, sizeText) {
     const textRedX = (parkingWidth ) * 3;
     const textRedY =  100;
 
-    sizeText.textYellowX = textYellowX;
-    sizeText.textYellowY = textYellowY;
-    sizeText.textRedX = textRedX;
-    sizeText.textRedY = textRedY;
-    
+    sizeText['#d1191f'] = {
+        x: textRedX,
+        y: textRedY
+    };
 
+    sizeText['#ffc841'] = {
+        x: textYellowX,
+        y: textYellowY
+    };
+    
     const textRed = new Text({
         text: 'P',
         style: {
@@ -47,13 +51,9 @@ export function addSpaceP(app, sizeText) {
     textYellow.x = textYellowX;
     textYellow.y = textYellowY;
 
-    
-
     textRed.x = textRedX;
     textRed.y = textRedY;
     
     app.stage.addChild(textYellow);
     app.stage.addChild(textRed);
-
-    
 }
