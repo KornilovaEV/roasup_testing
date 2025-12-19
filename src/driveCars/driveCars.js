@@ -1,5 +1,6 @@
 import { Sprite } from 'pixi.js';
-import { finalScen } from '../finalScen';
+import { finalScen } from '../finalScen/finalScen';
+import { gameState } from '../state';
 
 const CONFIG = {
   DISTANCE_THRESHOLD: 8,
@@ -17,7 +18,7 @@ function smoothRotate(sprite, targetAngle, speed = 0.1) {
   sprite.rotation += normalizedDiff * speed;
 }
 
-export function driveCars(activeSprite, line, coordTrash, app) {
+export function driveCars(activeSprite, line, coordTrash, app, finalLayer) {
   const coordDriwRedCar = line['#d1191f'].slice(0, coordTrash[0] + 1);
   const coordDriwYellowCar = line['#ffc841'].slice(0, coordTrash[1]);
   const [redCar, yellowCar] = activeSprite;
@@ -65,7 +66,7 @@ export function driveCars(activeSprite, line, coordTrash, app) {
     ) {
       state.isComplete = true;
       app.ticker.remove(moveCar);
-      showFailScreen(app);
+      showFailScreen(app, finalLayer);
     }
   };
 
@@ -79,29 +80,32 @@ function moveToTarget(sprite, target, delta, speed) {
 }
 
 // проигрыш
-function showFailScreen(app) {
+export function showFailScreen(app, finalLayer) {
+  const { width, height } = gameState;
+  gameState.failScen = true;
   const fail = Sprite.from('fail');
   fail.anchor.set(0.5);
-  fail.x = app.screen.width / 2;
-  fail.y = app.screen.height / 2;
+  fail.x = width / 2;
+  fail.y = height / 2;
   fail.scale.set(0.5);
   fail.alpha = 0;
   app.stage.addChild(fail);
 
-  let fadeTicker = null;
-
-  const fadeIn = (delta) => {
+  const failTicker = (delta) => {
     fail.alpha += CONFIG.FADE_SPEED * delta.deltaTime;
     if (fail.alpha >= 1) {
+      let timer;
       fail.alpha = 1;
-      app.ticker.remove(fadeTicker);
-      setTimeout(() => {
+      app.ticker.remove(failTicker);
+      gameState.failScen = false;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
         app.stage.removeChild(fail);
-        finalScen(app);
+        finalScen(app, finalLayer);
       }, CONFIG.FAIL_DISPLAY_TIME);
     }
   };
 
-  fadeTicker = fadeIn;
-  app.ticker.add(fadeTicker);
+  gameState.failScen = failTicker;
+  app.ticker.add(failTicker);
 }

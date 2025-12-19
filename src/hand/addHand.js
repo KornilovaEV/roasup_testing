@@ -7,21 +7,23 @@ export function addHand(gameLayer) {
 
   const {
     width,
+    height,
     parking: { bottomParking, parkingWithPaddingWidth, paddingBetweeenSpace },
   } = gameState;
 
   const scaleWidth = width * 0.00025;
 
   hand.x = parkingWithPaddingWidth + paddingBetweeenSpace * 2;
-  hand.y = bottomParking * 2;
+  hand.y = height - 30;
   hand.scale.set(scaleWidth);
 
   gameLayer.addChild(hand);
 
-  return hand;
+  gameState.handSprite = hand;
 }
 
-export function animateHand(handSprite, time) {
+export function animateHand(time) {
+  const { handSprite } = gameState;
   const {
     width,
     height,
@@ -31,10 +33,10 @@ export function animateHand(handSprite, time) {
   const speed = time.deltaTime;
 
   handSprite.x += (speed * width) / height;
-  handSprite.y -= speed * 1.2;
+  handSprite.y -= speed * 2;
 
   const startX = parkingWithPaddingWidth + paddingBetweeenSpace * 2;
-  const startY = bottomParking * 2;
+  const startY = height - 30;
   const endX = (parkingWithPaddingWidth + paddingBetweeenSpace) * 2.4;
   const endY = bottomParking;
 
@@ -44,7 +46,8 @@ export function animateHand(handSprite, time) {
   }
 }
 
-export function disappearanceHand(app, handSprite) {
+export function disappearanceHand(app) {
+  const { handSprite } = gameState;
   const ticker = () => {
     handSprite.alpha -= 0.05;
 

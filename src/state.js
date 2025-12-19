@@ -9,6 +9,7 @@ export const gameState = {
     '#d1191f': [],
     '#ffc841': [],
   },
+  handSprite: {},
   isDrawing: false,
   lastPoint: null,
   handVisible: true,
@@ -16,6 +17,10 @@ export const gameState = {
   trashCoord: null,
   width: 0,
   height: 0,
+  failScen: false,
+  finalScen: false,
+  prevWidth: null,
+  prevHeight: null,
 
   parking: {
     parkingLine: 5,

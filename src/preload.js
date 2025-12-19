@@ -4,7 +4,6 @@ import carRed from './assets/carRed.png';
 import carYellow from './assets/carYellow.png';
 import carBlue from './assets/carBlue.png';
 import carGreen from './assets/carGreen.png';
-import carWhite from './assets/carWhite.png';
 import hand from './assets/hand.png';
 import gamelogo from './assets/gamelogo.png';
 import fail from './assets/fail.png';
@@ -16,7 +15,6 @@ export async function preload() {
     { alias: 'carYellow', src: carYellow },
     { alias: 'carBlue', src: carBlue },
     { alias: 'carGreen', src: carGreen },
-    { alias: 'carWhite', src: carWhite },
     { alias: 'hand', src: hand },
     { alias: 'gamelogo', src: gamelogo },
     { alias: 'fail', src: fail },
