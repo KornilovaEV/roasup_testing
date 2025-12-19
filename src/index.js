@@ -146,5 +146,4 @@ const stopDrawing = (line, lineSprite, color) => {
     }
   };
   app.ticker.add(tickerHand);
-  
 })();
