@@ -1,4 +1,5 @@
 import { Application, Graphics, Rectangle} from "pixi.js";
+
 import { addParkingSpace } from './parking/addParkingSpace.js'
 import { addSpaceP } from "./parking/addSpaceP.js";
 import { addCars } from "./parking/addCars.js";

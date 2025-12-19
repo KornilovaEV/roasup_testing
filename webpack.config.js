@@ -8,13 +8,16 @@
      output: {
        filename: '[name].bundle.js',
        path: path.resolve(__dirname, 'dist'),
+       clean: true, 
+     },
+     resolve: {
+      extensions: ['.js', '.json'], // ✅ КРИТИЧНО!
      },
      module: {
        rules: [
-         // правила обработки модулей
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          type: 'asset/resource', // или 'asset', если нужно авто-инлайнить мелкие
+          type: 'asset/resource', 
         },
        ],
      },
@@ -25,7 +28,11 @@
        }),
      ],
      devServer: {
-       static: './dist',
-       port: 8080,
+      static: {
+        directory: path.resolve(__dirname), 
+      },
+      port: 8080,
+      open: true,
+      hot: true,
      },
    };
