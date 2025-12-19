@@ -1,5 +1,5 @@
-import { Sprite } from "pixi.js";
-import { finalScen } from "../finalScen";
+import { Sprite } from 'pixi.js';
+import { finalScen } from '../finalScen';
 
 const CONFIG = {
   DISTANCE_THRESHOLD: 8,
@@ -11,13 +11,12 @@ const CONFIG = {
 function smoothRotate(sprite, targetAngle, speed = 0.1) {
   const currentAngle = sprite.rotation;
   const diff = targetAngle - currentAngle;
-  
+
   // Нормализуем угол (-PI до PI)
   const normalizedDiff = ((diff + Math.PI) % (2 * Math.PI)) - Math.PI;
-  
+
   sprite.rotation += normalizedDiff * speed;
 }
-
 
 export function driveCars(activeSprite, line, coordTrash, app) {
   const coordDriwRedCar = line['#d1191f'].slice(0, coordTrash[0] + 1);
@@ -28,7 +27,7 @@ export function driveCars(activeSprite, line, coordTrash, app) {
   const state = {
     currentIndexRed: 0,
     currentIndexYellow: 0,
-    isComplete: false
+    isComplete: false,
   };
 
   const moveCar = (delta) => {
@@ -38,10 +37,10 @@ export function driveCars(activeSprite, line, coordTrash, app) {
     if (state.currentIndexRed < coordDriwRedCar.length - 1) {
       const target = coordDriwRedCar[state.currentIndexRed];
       const targetAngle = -Math.atan2(target.y - redCar.y, target.x - redCar.x);
-      
+
       smoothRotate(redCar, targetAngle, 0.04 * delta.deltaTime);
       moveToTarget(redCar, target, delta, CONFIG.BASE_SPEED);
-      
+
       if (Math.hypot(target.x - redCar.x, target.y - redCar.y) < CONFIG.DISTANCE_THRESHOLD) {
         state.currentIndexRed++;
       }
@@ -51,19 +50,20 @@ export function driveCars(activeSprite, line, coordTrash, app) {
     if (state.currentIndexYellow < coordDriwYellowCar.length - 1) {
       const target = coordDriwYellowCar[state.currentIndexYellow];
       const targetAngle = Math.atan2(target.y - yellowCar.y, target.x - yellowCar.x);
-      
+
       smoothRotate(yellowCar, targetAngle, 0.04 * delta.deltaTime);
       moveToTarget(yellowCar, target, delta, CONFIG.BASE_SPEED);
-      
+
       if (Math.hypot(target.x - yellowCar.x, target.y - yellowCar.y) < CONFIG.DISTANCE_THRESHOLD) {
         state.currentIndexYellow++;
       }
     }
 
     // Проверка завершения
-    if (state.currentIndexRed >= coordDriwRedCar.length - 1 && 
-        state.currentIndexYellow >= coordDriwYellowCar.length - 1) {
-      
+    if (
+      state.currentIndexRed >= coordDriwRedCar.length - 1 &&
+      state.currentIndexYellow >= coordDriwYellowCar.length - 1
+    ) {
       state.isComplete = true;
       app.ticker.remove(moveCar);
       showFailScreen(app);
@@ -105,4 +105,4 @@ function showFailScreen(app) {
 
   fadeTicker = fadeIn;
   app.ticker.add(fadeTicker);
-};
+}

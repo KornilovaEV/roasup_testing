@@ -1,38 +1,38 @@
-import { Sprite } from "pixi.js";
+import { Sprite } from 'pixi.js';
 
 export function addHand(app) {
-    const hand = Sprite.from('hand');
+  const hand = Sprite.from('hand');
 
-    hand.x = 220;
-    hand.y = 400;
-    hand.scale.set(0.2);
+  hand.x = 220;
+  hand.y = 400;
+  hand.scale.set(0.2);
 
-    app.stage.addChild(hand);
+  app.stage.addChild(hand);
 
-    return hand;
-};
+  return hand;
+}
 
 export function animateHand(app, handSprite, time) {
+  const dx = time.deltaTime * 1.5;
+  const hand = handSprite;
+  hand.x += dx;
+  hand.y -= dx;
 
-    const dx = time.deltaTime *1.5;
-    const hand = handSprite;
-    hand.x += dx;
-    hand.y -= dx;
+  if (hand.x >= (app.screen.width / 10) * 5 + 40) {
+    hand.x = 220;
+    hand.y = 400;
+  }
+}
 
-    if (hand.x >= (app.screen.width / 10 ) * 5 + 40) {
-      hand.x = 220;
-      hand.y = 400;
-    }
-};
-
-export function disappearanceHand(app, handSprite){
+export function disappearanceHand(app, handSprite) {
   const ticker = () => {
     handSprite.alpha -= 0.05;
-    
+
     if (handSprite.alpha <= 0) {
-        handSprite.alpha = 0; 
-        app.ticker.remove(ticker);
-    }}
+      handSprite.alpha = 0;
+      app.ticker.remove(ticker);
+    }
+  };
 
   app.ticker.add(ticker);
-};
+}

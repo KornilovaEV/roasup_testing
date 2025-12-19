@@ -12,15 +12,15 @@ import button from './assets/button.png';
 
 export async function preload() {
   const assets = [
-    {alias: 'carRed', src: carRed},
-    {alias: 'carYellow', src: carYellow},
-    {alias: 'carBlue', src: carBlue},
-    {alias: 'carGreen', src: carGreen},
-    {alias: 'carWhite', src: carWhite},
-    {alias: 'hand', src: hand},
-    {alias: 'gamelogo', src: gamelogo},
-    {alias: 'fail', src: fail},
-    {alias: 'button', src: button}
+    { alias: 'carRed', src: carRed },
+    { alias: 'carYellow', src: carYellow },
+    { alias: 'carBlue', src: carBlue },
+    { alias: 'carGreen', src: carGreen },
+    { alias: 'carWhite', src: carWhite },
+    { alias: 'hand', src: hand },
+    { alias: 'gamelogo', src: gamelogo },
+    { alias: 'fail', src: fail },
+    { alias: 'button', src: button },
   ];
   await Assets.load(assets);
 }
