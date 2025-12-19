@@ -8,7 +8,6 @@ export function driveCars(activeSprite, line, coordTrash, app) {
 
   let currentIndexRed = 0;
   let currentIndexYellow = 0;
-//   const speed = 0.5;
 
   const speedRed = Math.max(coordDriwRedCar.length, coordDriwYellowCar.length) === coordDriwRedCar.length ? 1: 
   coordDriwRedCar.length/coordDriwYellowCar.length;
@@ -61,19 +60,19 @@ export function driveCars(activeSprite, line, coordTrash, app) {
         app.stage.addChild(fail);
 
 
-        // const ticker = (delta) => {
-        // fail.alpha += 0.02 * delta.deltaTime;
+        const ticker = (delta) => {
+        fail.alpha += 0.02 * delta.deltaTime;
         
-        // if (fail.alpha >= 1) {
-        //     fail.alpha = 1; 
-        //     app.ticker.remove(ticker); 
-        //     setTimeout(() => {
-        //         app.stage.removeChild(fail);
-        //         finalScen(app);
-        //     }, 2000)
-        // }}
+        if (fail.alpha >= 1) {
+            fail.alpha = 1; 
+            app.ticker.remove(ticker); 
+            setTimeout(() => {
+                app.stage.removeChild(fail);
+                finalScen(app);
+            }, 2000)
+        }}
     
-    // app.ticker.add(ticker);
+    app.ticker.add(ticker);
 
 
     }

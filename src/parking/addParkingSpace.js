@@ -1,5 +1,5 @@
 import { Container, Graphics } from 'pixi.js';
-import { BOTTOM_Y, PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
+import { PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
 
 export function addParkingSpace(app) {
   const parkingSpace = new Container();
@@ -13,11 +13,15 @@ export function addParkingSpace(app) {
   // Выравниваем контейнер по центру сцены
   parkingSpace.position.x = (app.screen.width - totalWidth) / 2;
 
+  
+// Низ парковки
+const bottomY = app.screen.height/3;
+
   for (let i = 0; i < PARKING_LINE; i++) {
       let positionX =  (parkingWidth + PADDING_BETWEEN_SPACES) * i ;
 
-      const parking = new Graphics().rect(positionX, 0, 20, BOTTOM_Y)
-        .rect(positionX - 10, BOTTOM_Y, 40, 10).fill(0xFFFFFF);
+      const parking = new Graphics().rect(positionX, 0, 20, bottomY)
+        .rect(positionX - 10, bottomY, 40, 10).fill(0xFFFFFF);
         
       parkingSpace.addChild(parking); 
     }

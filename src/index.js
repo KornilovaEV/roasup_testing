@@ -11,7 +11,7 @@ import { finalScen } from "./finalScen.js";
 const app = new Application();
 
 async function setup() {
-  await app.init({ background: "#545454", }); //  resizeTo: window 
+  await app.init({ background: "#545454", resizeTo: window });
   document.body.appendChild(app.canvas);
 }
 
@@ -34,24 +34,27 @@ let handVisible = true;     // Отображение анимации руки
 
 let activeColor = null;
 let trashCoord = null;
+
+function checkCollision(point, sprite) {
+  return point.x >= sprite.x && point.x <= sprite.x + sprite.width + 60 &&
+         point.y >= sprite.y && point.y <= sprite.y + sprite.height + 100;
+}
+
 // Функция для начала рисования
 const startDrawing = ({data}, activeSprite, line) => {
   lastPoint = data.getLocalPosition(app.stage);
   const [red, yellow] = activeSprite;
 
+  const redCar = checkCollision(lastPoint, red)
+  const yellowCar = checkCollision(lastPoint, yellow)
+
   // если красная машинка
-  if(lastPoint.x >  red.x && lastPoint.x < red.x + 60 && 
-    lastPoint.y >  red.y && lastPoint.y < red.y + 110 &&
-    line['#d1191f'].length === 0    
-  ){
+  if(redCar && line['#d1191f'].length === 0){
     activeColor = '#d1191f';
     isDrawing = true;
     handVisible = false;
   } //если желтая 
-  else if(lastPoint.x >  yellow.x && lastPoint.x <  yellow.x + 60 && 
-    lastPoint.y >  yellow.y && lastPoint.y <  yellow.y + 110 &&
-    line['#ffc841'].length === 0    
-  ){
+  else if(yellowCar && line['#ffc841'].length === 0){
     activeColor = '#ffc841';
     isDrawing = true;
     handVisible = false;
@@ -60,14 +63,13 @@ const startDrawing = ({data}, activeSprite, line) => {
      
 const onDrawLine = ({data}, line, lineSprite) => {
   
-  if (!isDrawing || !lastPoint) return;
+  if (!isDrawing || !lastPoint || !activeColor) return;
   const currentPos = data.getLocalPosition(app.stage);
 
   const lineGraphics = new Graphics().moveTo(lastPoint.x, lastPoint.y).lineTo(currentPos.x, currentPos.y).stroke( {color: activeColor, width: 10});
 
   line[activeColor].push({x: Math.round(currentPos.x), y: Math.round(currentPos.y)});
   lineSprite[activeColor].push(lineGraphics)
-
 
   app.stage.addChild(lineGraphics);
   lastPoint = currentPos; 
@@ -82,6 +84,8 @@ const stopDrawing = (line, lineSprite, color) => {
 
   const lastPoints = line[activeColor][line[activeColor].length - 1];
 
+  if(!lastPoints) return;  
+  
   if(
     !(lastPoints.x > sizeText[color].x && lastPoints.x < sizeText[color].x + 72 &&
      lastPoints.y > sizeText[color].y && lastPoints.y < sizeText[color].y + 72)
@@ -100,12 +104,7 @@ const stopDrawing = (line, lineSprite, color) => {
   if(trashCoord){  
       driveCars(activeSprite, line, trashCoord, app);          
     }
-  
 };
-
-  
-
-    
 
 // Asynchronous IIFE
 (async () => {
@@ -116,29 +115,32 @@ const stopDrawing = (line, lineSprite, color) => {
   addSpaceP(app, sizeText);
   addCars(app, activeSprite);
   const handSprite = addHand(app);
+  
+  const heightHitArea = app.screen.height + 50 - app.screen.height/3;
 
   app.stage.on('pointerdown', (event) => startDrawing(event, activeSprite, line));
   app.stage.on('pointermove', (event) =>  onDrawLine(event, line, lineSprite ));
   app.stage.on('pointerup', () => stopDrawing(line, lineSprite, activeColor));
   app.stage.interactive = true;
   app.stage.interactiveChildren = false;
-  app.stage.hitArea = new Rectangle(-400, -4000, 5500, 5500);
-
-   
+  app.stage.hitArea = new Rectangle(50, 50, app.screen.width - 100, heightHitArea ); //ограничела размер возможной области, чтобы пути точно пересклись
   
   
   let timer;
-  // clearTimeout(timer);
-  // timer = setTimeout(() => {
-  //   disappearanceHand(app, handSprite);
-  //   finalScen(app);
-  // }, 20 * 1000);
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    disappearanceHand(app, handSprite);
+    finalScen(app);
+  }, 20 * 1000);
 
   const tickerHand = (time) => {
     if(handVisible){
       animateHand(app, handSprite, time);
     } else {
-      clearTimeout(timer)
+      if (timer) {
+        clearTimeout(timer);
+        timer = undefined;
+      }
       app.ticker.remove(tickerHand);
       disappearanceHand(app, handSprite);
     }

@@ -5,6 +5,10 @@ import { PADDING_BETWEEN_SPACES, PARKING_LINE } from "./constants";
 export function addSpaceP(app, sizeText) {
     const appScreenWidth = app.screen.width;
 
+    
+    // Низ парковки
+    const bottomY = app.screen.height/3;
+
     // Общая ширина всех элементов (парковочных мест и отступов между ними)
     const totalWidth = appScreenWidth - ((PARKING_LINE - 1) * PADDING_BETWEEN_SPACES)
 
@@ -12,10 +16,10 @@ export function addSpaceP(app, sizeText) {
     const parkingWidth = totalWidth/PARKING_LINE;
 
     const textYellowX = parkingWidth * 2;
-    const textYellowY =  100;
+    const textYellowY =  bottomY - 72;
 
     const textRedX = (parkingWidth ) * 3;
-    const textRedY =  100;
+    const textRedY =  bottomY - 72;
 
     sizeText['#d1191f'] = {
         x: textRedX,

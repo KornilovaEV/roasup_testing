@@ -1,5 +1,5 @@
 import { Container, Sprite } from 'pixi.js';
-import { BOTTOM_Y, PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
+import { PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
 
 export function addCars(app, activeSprite) {
   const carStatic = new Container();
@@ -11,11 +11,15 @@ export function addCars(app, activeSprite) {
   //ширина 1 парк места с отступом
   const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
 
+  
+  // Низ парковки
+  const bottomY = app.screen.height/3;
+
   app.stage.addChild(carStatic);
   
   const carBlue = Sprite.from('carBlue');
   carBlue.x = parkingWithSpacesWidth/2 + 20; //20 ширина полосы
-  carBlue.y = BOTTOM_Y;
+  carBlue.y = bottomY;
   carBlue.scale.set(0.1); 
   carBlue.scale.y *= -1; 
   carStatic.addChild(carBlue);
@@ -23,7 +27,7 @@ export function addCars(app, activeSprite) {
   const carGreen = Sprite.from('carGreen');
 
   carGreen.x = (3 * parkingWithSpacesWidth + parkingWithSpacesWidth/2 + 20);
-  carGreen.y = BOTTOM_Y;
+  carGreen.y = bottomY;
   carGreen.scale.set(0.1);
   carGreen.scale.y *= -1; 
   carStatic.addChild(carGreen);
@@ -31,7 +35,7 @@ export function addCars(app, activeSprite) {
   const carRed = Sprite.from('carRed');
 
   carRed.x = parkingWithSpacesWidth;
-  carRed.y = app.screen.height - 120;
+  carRed.y = bottomY * 2;
   carRed.scale.set(0.1);
   carStatic.addChild(carRed);
 
@@ -39,7 +43,7 @@ export function addCars(app, activeSprite) {
   const carYellow = Sprite.from('carYellow');
 
   carYellow.x = parkingWithSpacesWidth*3;
-  carYellow.y = app.screen.height - 120;
+  carYellow.y = bottomY * 2;
   carYellow.scale.set(0.1);
   carStatic.addChild(carYellow);
 
