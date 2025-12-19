@@ -92,14 +92,14 @@ function showFailScreen(app) {
 
   const fadeIn = (delta) => {
     fail.alpha += CONFIG.FADE_SPEED * delta.deltaTime;
-    // if (fail.alpha >= 1) {
-    //   fail.alpha = 1;
-    //   app.ticker.remove(fadeTicker);
-    //   setTimeout(() => {
-    //     app.stage.removeChild(fail);
-    //     finalScen(app);
-    //   }, CONFIG.FAIL_DISPLAY_TIME);
-    // }
+    if (fail.alpha >= 1) {
+      fail.alpha = 1;
+      app.ticker.remove(fadeTicker);
+      setTimeout(() => {
+        app.stage.removeChild(fail);
+        finalScen(app);
+      }, CONFIG.FAIL_DISPLAY_TIME);
+    }
   };
 
   fadeTicker = fadeIn;

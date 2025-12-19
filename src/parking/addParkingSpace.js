@@ -1,31 +1,50 @@
-import { Container, Graphics } from 'pixi.js';
-import { PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
+import { Text } from 'pixi.js';
+import { gameState } from '../state';
 
-export function addParkingSpace(app) {
-  const parkingSpace = new Container();
+function createText(color, sizeTextLetter) {
+  return new Text({
+    text: 'P',
+    style: {
+      fill: color,
+      fontSize: sizeTextLetter,
+      fontFamily: 'Arial',
+      align: 'center',
+      resolution: window.devicePixelRatio || 2,
+      letterSpacing: 0,
+    },
+  });
+}
 
-  // Общая ширина всех элементов (парковочных мест и отступов между ними)
-  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
+export function addParkingSpace(backgroundLayer) {
+  const {
+    width,
+    parking: { bottomParking, parkingWithPaddingWidth, paddingBetweeenSpace },
+  } = gameState;
 
-  //ширина 1 парк места
-  const parkingWidth = totalWidth / PARKING_LINE;
+  const sizeTextLetter = Math.floor(width * 0.08);
 
-  // Выравниваем контейнер по центру сцены
-  parkingSpace.position.x = (app.screen.width - totalWidth) / 2;
+  const textYellowX = (parkingWithPaddingWidth + paddingBetweeenSpace) * 1.5;
+  const textRedX = (parkingWithPaddingWidth + paddingBetweeenSpace) * 2.4;
+  const textY = bottomParking - sizeTextLetter;
 
-  // Низ парковки
-  const bottomY = app.screen.height / 3;
+  gameState.sizeText['#d1191f'] = {
+    x: textRedX,
+    y: textY,
+  };
 
-  for (let i = 0; i < PARKING_LINE; i++) {
-    let positionX = (parkingWidth + PADDING_BETWEEN_SPACES) * i;
+  gameState.sizeText['#ffc841'] = {
+    x: textYellowX,
+    y: textY,
+  };
 
-    const parking = new Graphics()
-      .rect(positionX, 0, 20, bottomY)
-      .rect(positionX - 10, bottomY, 40, 10)
-      .fill(0xffffff);
+  const textRed = createText('#d1191f', sizeTextLetter);
+  const textYellow = createText('#ffc841', sizeTextLetter);
 
-    parkingSpace.addChild(parking);
-  }
+  textYellow.x = textYellowX;
+  textYellow.y = textY;
 
-  app.stage.addChild(parkingSpace);
+  textRed.x = textRedX;
+  textRed.y = textY;
+
+  backgroundLayer.addChild(textYellow, textRed);
 }

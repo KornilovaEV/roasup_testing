@@ -1,52 +1,42 @@
-import { Container, Sprite } from 'pixi.js';
-import { PADDING_BETWEEN_SPACES, PARKING_LINE } from './constants';
+import { Sprite } from 'pixi.js';
+import { gameState } from '../state';
 
-export function addCars(app, activeSprite) {
-  const carStatic = new Container();
-  // Общая ширина всех элементов (парковочных мест и отступов между ними)
-  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
-
-  //ширина 1 парк места
-  const parkingWidth = totalWidth / PARKING_LINE;
-  //ширина 1 парк места с отступом
-  const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
-
-  // Низ парковки
-  const bottomY = app.screen.height / 3;
-
-  const scaleWidth = app.screen.width * 0.0001;
-
-  app.stage.addChild(carStatic);
+export function addCars(backgroundLayer, gameLayer) {
+  const {
+    width,
+    parking: { parkingWithPaddingWidth, paddingBetweeenSpace, bottomParking, parkingWidth },
+  } = gameState;
+  const scaleWidth = width * 0.0001;
 
   const carBlue = Sprite.from('carBlue');
-  carBlue.x = parkingWithSpacesWidth / 2 + 20; //20 ширина полосы
-  carBlue.y = bottomY;
+  carBlue.x = parkingWidth - paddingBetweeenSpace;
+  carBlue.y = bottomParking;
   carBlue.scale.set(scaleWidth);
   carBlue.scale.y *= -1;
-  carStatic.addChild(carBlue);
 
   const carGreen = Sprite.from('carGreen');
 
-  carGreen.x = 3 * parkingWithSpacesWidth + parkingWithSpacesWidth / 2 + 20;
-  carGreen.y = bottomY;
+  carGreen.x = parkingWithPaddingWidth * 3.75;
+  carGreen.y = bottomParking;
   carGreen.scale.set(scaleWidth);
   carGreen.scale.y *= -1;
-  carStatic.addChild(carGreen);
 
   const carRed = Sprite.from('carRed');
 
-  carRed.x = parkingWithSpacesWidth;
-  carRed.y = bottomY * 2;
+  carRed.x = parkingWithPaddingWidth + paddingBetweeenSpace * 2;
+  carRed.y = bottomParking * 2;
   carRed.scale.set(scaleWidth);
-  carStatic.addChild(carRed);
+  carRed.anchor.set(0.5);
 
   const carYellow = Sprite.from('carYellow');
 
-  carYellow.x = parkingWithSpacesWidth * 3;
-  carYellow.y = bottomY * 2;
+  carYellow.x = (parkingWithPaddingWidth + paddingBetweeenSpace) * 3 - paddingBetweeenSpace * 0.5;
+  carYellow.y = bottomParking * 2;
   carYellow.scale.set(scaleWidth);
-  carStatic.addChild(carYellow);
+  carYellow.anchor.set(0.5);
 
-  activeSprite.push(carRed);
-  activeSprite.push(carYellow);
+  backgroundLayer.addChild(carBlue, carGreen);
+  gameLayer.addChild(carRed, carYellow);
+
+  gameState.activeSprite.push(carRed, carYellow);
 }

@@ -1,50 +1,43 @@
 import { Sprite } from 'pixi.js';
-import { PADDING_BETWEEN_SPACES, PARKING_LINE } from '../parking/constants';
 
-export function addHand(app) {
+import { gameState } from '../state';
+
+export function addHand(gameLayer) {
   const hand = Sprite.from('hand');
 
-  // Общая ширина всех элементов (парковочных мест и отступов между ними)
-  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
-  //ширина 1 парк места
-  const parkingWidth = totalWidth / PARKING_LINE;
-  //ширина 1 парк места с отступом
-  const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
+  const {
+    width,
+    parking: { bottomParking, parkingWithPaddingWidth, paddingBetweeenSpace },
+  } = gameState;
 
-  const bottomY = (app.screen.height * 2) / 3;
+  const scaleWidth = width * 0.00025;
 
-  const scaleWidth = app.screen.width * 0.0005;
-
-  hand.x = parkingWithSpacesWidth;
-  hand.y = bottomY;
+  hand.x = parkingWithPaddingWidth + paddingBetweeenSpace * 2;
+  hand.y = bottomParking * 2;
   hand.scale.set(scaleWidth);
 
-  app.stage.addChild(hand);
+  gameLayer.addChild(hand);
 
   return hand;
 }
 
-export function animateHand(app, handSprite, time) {
-  // Общая ширина всех элементов (парковочных мест и отступов между ними)
-  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
-  //ширина 1 парк места
-  const parkingWidth = totalWidth / PARKING_LINE;
-  //ширина 1 парк места с отступом
-  const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
+export function animateHand(handSprite, time) {
+  const {
+    width,
+    height,
+    parking: { bottomParking, parkingWithPaddingWidth, paddingBetweeenSpace },
+  } = gameState;
 
-  const dx = time.deltaTime; // Нормализуем под 60 FPS
+  const speed = time.deltaTime;
 
-  // Движение: правая диагональ вверх
-  handSprite.x += dx;
-  handSprite.y -= dx; // Немного меньше по Y для красивой траектории
+  handSprite.x += (speed * width) / height;
+  handSprite.y -= speed * 1.2;
 
-  // ✅ Точные координаты старт/финиш
-  const startX = parkingWithSpacesWidth;
-  const startY = (app.screen.height * 2) / 3;
-  const endX = parkingWithSpacesWidth * 3;
-  const endY = app.screen.height / 3;
+  const startX = parkingWithPaddingWidth + paddingBetweeenSpace * 2;
+  const startY = bottomParking * 2;
+  const endX = (parkingWithPaddingWidth + paddingBetweeenSpace) * 2.4;
+  const endY = bottomParking;
 
-  // ✅ Сброс только при достижении КОНЦА пути
   if (handSprite.x >= endX && handSprite.y <= endY) {
     handSprite.x = startX;
     handSprite.y = startY;
@@ -60,6 +53,5 @@ export function disappearanceHand(app, handSprite) {
       app.ticker.remove(ticker);
     }
   };
-
   app.ticker.add(ticker);
 }
