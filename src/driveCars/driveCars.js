@@ -12,8 +12,7 @@ function smoothRotate(sprite, targetAngle, speed = 0.1) {
   const currentAngle = sprite.rotation;
   const diff = targetAngle - currentAngle;
 
-  // Нормализуем угол (-PI до PI)
-  const normalizedDiff = ((diff + Math.PI) % (2 * Math.PI)) - Math.PI;
+  const normalizedDiff = ((diff + Math.PI) % (2 * Math.PI)) - Math.PI / 2;
 
   sprite.rotation += normalizedDiff * speed;
 }
@@ -36,7 +35,7 @@ export function driveCars(activeSprite, line, coordTrash, app) {
     // Красная машина
     if (state.currentIndexRed < coordDriwRedCar.length - 1) {
       const target = coordDriwRedCar[state.currentIndexRed];
-      const targetAngle = -Math.atan2(target.y - redCar.y, target.x - redCar.x);
+      const targetAngle = Math.atan2(target.y - redCar.y, target.x - redCar.x);
 
       smoothRotate(redCar, targetAngle, 0.04 * delta.deltaTime);
       moveToTarget(redCar, target, delta, CONFIG.BASE_SPEED);
@@ -93,14 +92,14 @@ function showFailScreen(app) {
 
   const fadeIn = (delta) => {
     fail.alpha += CONFIG.FADE_SPEED * delta.deltaTime;
-    if (fail.alpha >= 1) {
-      fail.alpha = 1;
-      app.ticker.remove(fadeTicker);
-      setTimeout(() => {
-        app.stage.removeChild(fail);
-        finalScen(app);
-      }, CONFIG.FAIL_DISPLAY_TIME);
-    }
+    // if (fail.alpha >= 1) {
+    //   fail.alpha = 1;
+    //   app.ticker.remove(fadeTicker);
+    //   setTimeout(() => {
+    //     app.stage.removeChild(fail);
+    //     finalScen(app);
+    //   }, CONFIG.FAIL_DISPLAY_TIME);
+    // }
   };
 
   fadeTicker = fadeIn;

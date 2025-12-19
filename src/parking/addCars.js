@@ -14,12 +14,14 @@ export function addCars(app, activeSprite) {
   // Низ парковки
   const bottomY = app.screen.height / 3;
 
+  const scaleWidth = app.screen.width * 0.0001;
+
   app.stage.addChild(carStatic);
 
   const carBlue = Sprite.from('carBlue');
   carBlue.x = parkingWithSpacesWidth / 2 + 20; //20 ширина полосы
   carBlue.y = bottomY;
-  carBlue.scale.set(0.1);
+  carBlue.scale.set(scaleWidth);
   carBlue.scale.y *= -1;
   carStatic.addChild(carBlue);
 
@@ -27,7 +29,7 @@ export function addCars(app, activeSprite) {
 
   carGreen.x = 3 * parkingWithSpacesWidth + parkingWithSpacesWidth / 2 + 20;
   carGreen.y = bottomY;
-  carGreen.scale.set(0.1);
+  carGreen.scale.set(scaleWidth);
   carGreen.scale.y *= -1;
   carStatic.addChild(carGreen);
 
@@ -35,14 +37,14 @@ export function addCars(app, activeSprite) {
 
   carRed.x = parkingWithSpacesWidth;
   carRed.y = bottomY * 2;
-  carRed.scale.set(0.1);
+  carRed.scale.set(scaleWidth);
   carStatic.addChild(carRed);
 
   const carYellow = Sprite.from('carYellow');
 
   carYellow.x = parkingWithSpacesWidth * 3;
   carYellow.y = bottomY * 2;
-  carYellow.scale.set(0.1);
+  carYellow.scale.set(scaleWidth);
   carStatic.addChild(carYellow);
 
   activeSprite.push(carRed);

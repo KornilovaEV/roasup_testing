@@ -1,11 +1,23 @@
 import { Sprite } from 'pixi.js';
+import { PADDING_BETWEEN_SPACES, PARKING_LINE } from '../parking/constants';
 
 export function addHand(app) {
   const hand = Sprite.from('hand');
 
-  hand.x = 220;
-  hand.y = 400;
-  hand.scale.set(0.2);
+  // Общая ширина всех элементов (парковочных мест и отступов между ними)
+  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
+  //ширина 1 парк места
+  const parkingWidth = totalWidth / PARKING_LINE;
+  //ширина 1 парк места с отступом
+  const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
+
+  const bottomY = (app.screen.height * 2) / 3;
+
+  const scaleWidth = app.screen.width * 0.0005;
+
+  hand.x = parkingWithSpacesWidth;
+  hand.y = bottomY;
+  hand.scale.set(scaleWidth);
 
   app.stage.addChild(hand);
 
@@ -13,14 +25,29 @@ export function addHand(app) {
 }
 
 export function animateHand(app, handSprite, time) {
-  const dx = time.deltaTime * 1.5;
-  const hand = handSprite;
-  hand.x += dx;
-  hand.y -= dx;
+  // Общая ширина всех элементов (парковочных мест и отступов между ними)
+  const totalWidth = app.screen.width - (PARKING_LINE - 1) * PADDING_BETWEEN_SPACES;
+  //ширина 1 парк места
+  const parkingWidth = totalWidth / PARKING_LINE;
+  //ширина 1 парк места с отступом
+  const parkingWithSpacesWidth = parkingWidth + PADDING_BETWEEN_SPACES;
 
-  if (hand.x >= (app.screen.width / 10) * 5 + 40) {
-    hand.x = 220;
-    hand.y = 400;
+  const dx = time.deltaTime; // Нормализуем под 60 FPS
+
+  // Движение: правая диагональ вверх
+  handSprite.x += dx;
+  handSprite.y -= dx; // Немного меньше по Y для красивой траектории
+
+  // ✅ Точные координаты старт/финиш
+  const startX = parkingWithSpacesWidth;
+  const startY = (app.screen.height * 2) / 3;
+  const endX = parkingWithSpacesWidth * 3;
+  const endY = app.screen.height / 3;
+
+  // ✅ Сброс только при достижении КОНЦА пути
+  if (handSprite.x >= endX && handSprite.y <= endY) {
+    handSprite.x = startX;
+    handSprite.y = startY;
   }
 }
 
