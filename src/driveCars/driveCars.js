@@ -23,7 +23,8 @@ export function driveCars(activeSprite, line, coordTrash, app, finalLayer) {
   const coordDriwYellowCar = line['#ffc841'].slice(0, coordTrash[1]);
   const [redCar, yellowCar] = activeSprite;
 
-  // Состояние анимации
+  const { speedRed, speedYellow } = syncCarSpeeds(coordDriwRedCar, coordDriwYellowCar);
+
   const state = {
     currentIndexRed: 0,
     currentIndexYellow: 0,
@@ -38,8 +39,8 @@ export function driveCars(activeSprite, line, coordTrash, app, finalLayer) {
       const target = coordDriwRedCar[state.currentIndexRed];
       const targetAngle = Math.atan2(target.y - redCar.y, target.x - redCar.x);
 
-      smoothRotate(redCar, targetAngle, 0.04 * delta.deltaTime);
-      moveToTarget(redCar, target, delta, CONFIG.BASE_SPEED);
+      smoothRotate(redCar, targetAngle, 0.4 * delta.deltaTime);
+      moveToTarget(redCar, target, delta, speedRed);
 
       if (Math.hypot(target.x - redCar.x, target.y - redCar.y) < CONFIG.DISTANCE_THRESHOLD) {
         state.currentIndexRed++;
@@ -51,8 +52,8 @@ export function driveCars(activeSprite, line, coordTrash, app, finalLayer) {
       const target = coordDriwYellowCar[state.currentIndexYellow];
       const targetAngle = Math.atan2(target.y - yellowCar.y, target.x - yellowCar.x);
 
-      smoothRotate(yellowCar, targetAngle, 0.04 * delta.deltaTime);
-      moveToTarget(yellowCar, target, delta, CONFIG.BASE_SPEED);
+      smoothRotate(yellowCar, targetAngle, 0.4 * delta.deltaTime);
+      moveToTarget(yellowCar, target, delta, speedYellow);
 
       if (Math.hypot(target.x - yellowCar.x, target.y - yellowCar.y) < CONFIG.DISTANCE_THRESHOLD) {
         state.currentIndexYellow++;
@@ -108,4 +109,29 @@ export function showFailScreen(app, finalLayer) {
 
   gameState.failScen = failTicker;
   app.ticker.add(failTicker);
+}
+
+// ф-ция для синхронизации скорости
+function calculatePathLength(path) {
+  if (path.length < 2) return 0;
+  let length = 0;
+  for (let i = 1; i < path.length; i++) {
+    const dx = path[i].x - path[i - 1].x;
+    const dy = path[i].y - path[i - 1].y;
+    length += Math.sqrt(dx * dx + dy * dy);
+  }
+  return length;
+}
+
+function syncCarSpeeds(pathRed, pathYellow) {
+  const lengthRed = calculatePathLength(pathRed);
+  const lengthYellow = calculatePathLength(pathYellow);
+  const maxLength = Math.max(lengthRed, lengthYellow);
+
+  const totalTime = maxLength / CONFIG.BASE_SPEED;
+
+  return {
+    speedRed: lengthRed / totalTime,
+    speedYellow: lengthYellow / totalTime,
+  };
 }
